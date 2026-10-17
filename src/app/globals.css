@@ -1,0 +1,96 @@
+@import "tailwindcss";
+
+@theme {
+  --color-lime: #d3fb07;
+  --color-lime-2: #eaff86;
+  --color-ink: #10180c;
+  --color-pine: #071108;
+  --color-canopy: #101a0d;
+  --color-moss: #1b2916;
+  --color-bark: #314028;
+  --color-mist: #c5d2b4;
+  --color-paper: #f6f8ee;
+  --color-ember: #ff5c39;
+  --font-sans: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  --font-serif: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-mono: var(--font-plex), ui-monospace, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--color-pine);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+}
+
+input,
+textarea,
+select {
+  color-scheme: dark;
+}
+
+::selection {
+  background: #d3fb07;
+  color: #10180c;
+}
+
+:focus-visible {
+  outline: 2px solid #d3fb07;
+  outline-offset: 3px;
+}
+
+summary::-webkit-details-marker {
+  display: none;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ticker {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.rise {
+  animation: rise 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.rise-2 {
+  animation-delay: 0.08s;
+}
+.rise-3 {
+  animation-delay: 0.16s;
+}
+.rise-4 {
+  animation-delay: 0.24s;
+}
+
+.ticker-track {
+  animation: ticker 46s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .ticker-track {
+    animation: none;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+}
