@@ -36,10 +36,12 @@ export function LaunchStudio() {
     if (!name.trim()) p.push("Give the coin a name.");
     if (!/^[A-Z0-9]{2,8}$/.test(symbol)) p.push("Ticker should be 2–8 letters or numbers.");
     if (legs.length < 1) p.push("Add at least one market.");
+    if (legs.some((l) => !Number.isFinite(l.weight) || l.weight < 0 || l.weight > 100)) p.push("Each weight must be between 0% and 100%.");
     if (weight !== 100) p.push(`Weights add up to ${weight}%. They need to be 100%.`);
+    if (legs.some((l) => !Number.isFinite(l.leverage) || l.leverage < 1 || l.leverage > 10)) p.push("Leverage must be between 1× and 10×.");
     if (target !== "Me" && handle.trim().length < 2) p.push("Add the handle that should receive the 1%.");
     return p;
-  }, [handle, legs.length, name, symbol, target, weight]);
+  }, [handle, legs, name, symbol, target, weight]);
 
   function update(i: number, patch: Partial<Draft>) {
     setLegs((prev) => prev.map((leg, idx) => (idx === i ? { ...leg, ...patch } : leg)));
@@ -56,7 +58,9 @@ export function LaunchStudio() {
     if (weight <= 0) return;
     const scaled = legs.map((l) => ({ ...l, weight: Math.round((l.weight / weight) * 100) }));
     const drift = 100 - scaled.reduce((s, l) => s + l.weight, 0);
-    scaled[0] = { ...scaled[0]!, weight: scaled[0]!.weight + drift };
+    // Put the rounding remainder on the largest leg so a small leg never drops below 0%.
+    const top = scaled.reduce((best, l, i) => (l.weight > scaled[best]!.weight ? i : best), 0);
+    scaled[top] = { ...scaled[top]!, weight: scaled[top]!.weight + drift };
     setLegs(scaled);
   }
 
