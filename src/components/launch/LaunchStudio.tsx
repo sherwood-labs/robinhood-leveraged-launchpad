@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { useApp } from "@/components/state";
-import { MARKETS, type Coin, type Leg, type Side } from "@/lib/data";
+import { COINS, MARKETS, type Coin, type Leg, type Side } from "@/lib/data";
 import { cx } from "@/lib/format";
 
 type Draft = Leg;
@@ -35,6 +35,9 @@ export function LaunchStudio() {
     const p: string[] = [];
     if (!name.trim()) p.push("Give the coin a name.");
     if (!/^[A-Z0-9]{2,8}$/.test(symbol)) p.push("Ticker should be 2–8 letters or numbers.");
+    // The coin page lives at /coin/<ticker in lower case>; never shadow a listed coin's page.
+    const taken = COINS.find((c) => c.slug === symbol.toLowerCase());
+    if (taken) p.push(`${taken.name} already uses /coin/${taken.slug}. Pick another ticker.`);
     if (legs.length < 1) p.push("Add at least one market.");
     if (weight !== 100) p.push(`Weights add up to ${weight}%. They need to be 100%.`);
     if (target !== "Me" && handle.trim().length < 2) p.push("Add the handle that should receive the 1%.");
